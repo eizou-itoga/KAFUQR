@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+  <meta charset="utf8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title> QR Code reader</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  </head>
+
+  <body>
+    
+    <div id="result" style="min-height: 20px;"></div>
+    <div>
+      <div style="position: relative;">
+      <video style="position: absolute;"></video>
+      </div>
+    </div>
+
+    <script>
+      const constraints = {
+        audio: false,
+        video: {
+          facingMode: 'enviroment',
+          width: 500,
+          height: 500,
+        }
+      };
+
+      (async() => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          const video = document.querySelector('video');
+          video.srcObject = stream;
+          video.play();
+
+          const {width, height} = constraints.video;
+          const canvas = new OffscreenCanvas(width, height);
+          const context = canvas.getContext('2d');
+          
+          const timer = setInterval(() => {
+            context.drawImage(video, 0, 0, width, height);
+            const imgeData = context.getImageData(0, 0, width, height);
+            const code = jsQR(imgeData.data, imgeData.width, imgeData.height);
+            if (code) {
+              document.querySelector('#result').textContent = code.data;
+            } else {
+              document.querySelector('#result').textContent = '';
+            }
+          
+          }, 300);
+        } catch(error) {
+          document.querySelector('#result').textContent = 'load error';
+        }
+      })();
+    </script>
+  </body>
+</html>
