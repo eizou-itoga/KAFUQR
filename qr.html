@@ -45,6 +45,8 @@
             const code = jsQR(imgeData.data, imgeData.width, imgeData.height);
             if (code) {
               document.querySelector('#result').textContent = code.data;
+              const r = "132A4";
+              location.href = "http://10.79.22.3/net/KAFUQR_res.html?" + r + "result=" + code.data;
             } else {
               document.querySelector('#result').textContent = '';
             }
