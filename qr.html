@@ -30,6 +30,9 @@
 
       (async() => {
         try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const paramValue = urlParams.get('rURL');
+          
           const stream = await navigator.mediaDevices.getUserMedia(constraints);
           const video = document.querySelector('video');
           video.srcObject = stream;
@@ -45,8 +48,7 @@
             const code = jsQR(imgeData.data, imgeData.width, imgeData.height);
             if (code) {
               document.querySelector('#result').textContent = code.data;
-              const r = "132A4";
-              location.href = "http://10.79.22.3/net/KAFU/QR_res.html?" + r + "result=" + code.data;
+              location.href = paramValue + "&result=" + code.data;
             } else {
               document.querySelector('#result').textContent = '';
             }
